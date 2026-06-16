@@ -71,20 +71,20 @@ def get_gradient_background(width, height, theme):
     glow_draw = ImageDraw.Draw(glow_overlay)
     
     # Draw top-left glowing blob
-    cx1, cy1 = 100, 100
+    cx1, cy1 = 150, 150
     r_max1 = 550
     for r in range(r_max1, 0, -5):
-        alpha = int(28 * (1 - r / r_max1))
+        alpha = int(32 * (1 - r / r_max1))
         glow_draw.ellipse(
             [(cx1 - r, cy1 - r), (cx1 + r, cy1 + r)],
             fill=(glow_1_color[0], glow_1_color[1], glow_1_color[2], alpha)
         )
         
     # Draw bottom-right glowing blob
-    cx2, cy2 = width - 100, height - 150
+    cx2, cy2 = width - 150, height - 200
     r_max2 = 650
     for r in range(r_max2, 0, -5):
-        alpha = int(28 * (1 - r / r_max2))
+        alpha = int(32 * (1 - r / r_max2))
         glow_draw.ellipse(
             [(cx2 - r, cy2 - r), (cx2 + r, cy2 + r)],
             fill=(glow_2_color[0], glow_2_color[1], glow_2_color[2], alpha)
@@ -97,7 +97,8 @@ def get_gradient_background(width, height, theme):
 def generate_social_card_png(card):
     """
     Generates a premium 1080x1350 portrait social media card optimized for Instagram/LinkedIn.
-    Features modern glowing neon blobs, card drop shadows, and brand advertising.
+    Highlights customer professional details cleanly by putting focus entirely on the card itself,
+    and moves platforms branding ("QRConnect") to a small, elegant footnote at the bottom.
     Saves and updates card.png_file.
     """
     width, height = 1080, 1350
@@ -105,8 +106,7 @@ def generate_social_card_png(card):
     draw = ImageDraw.Draw(img)
     
     # Load fonts
-    font_large_title, _ = load_fonts(bold_size=72, regular_size=24)
-    font_name, font_sub = load_fonts(bold_size=42, regular_size=28)
+    font_name, font_sub = load_fonts(bold_size=44, regular_size=28)
     font_body, font_small = load_fonts(bold_size=26, regular_size=22)
     font_brand, _ = load_fonts(bold_size=20, regular_size=20)
     
@@ -128,11 +128,11 @@ def generate_social_card_png(card):
         card_bg = (40, 40, 40, 200)
         border_color = (80, 80, 80)
         
-    # Draw central horizontal card mockup container
+    # Draw central horizontal card mockup container - moved up for focus
     card_w = 960
-    card_h = 620
+    card_h = 640
     card_left = (width - card_w) // 2
-    card_top = 340
+    card_top = 220
     card_right = card_left + card_w
     card_bottom = card_top + card_h
     
@@ -171,19 +171,19 @@ def generate_social_card_png(card):
     
     # LEFT HALF: Profile + Text details (width: x = card_left to x = card_left + 540)
     # 1. Profile Photo
-    photo_size = 160
+    photo_size = 170
     photo_left = card_left + 50
     photo_top = card_top + 60
     
     photo_mask = Image.new("L", (photo_size, photo_size), 0)
     mask_draw = ImageDraw.Draw(photo_mask)
-    mask_draw.rounded_rectangle((0, 0, photo_size, photo_size), radius=24, fill=255)
+    mask_draw.rounded_rectangle((0, 0, photo_size, photo_size), radius=28, fill=255)
     
     photo_placeholder = Image.new("RGB", (photo_size, photo_size), accent_color)
     p_draw = ImageDraw.Draw(photo_placeholder)
     
     initials = "".join([part[0] for part in card.name.split()[:2]]).upper()
-    font_initials, _ = load_fonts(bold_size=60, regular_size=24)
+    font_initials, _ = load_fonts(bold_size=64, regular_size=24)
     
     try:
         w, h = p_draw.textsize(initials, font=font_initials)
@@ -205,7 +205,7 @@ def generate_social_card_png(card):
     img.paste(final_photo_img, (photo_left, photo_top), photo_mask)
     draw.rounded_rectangle(
         [(photo_left - 3, photo_top - 3), (photo_left + photo_size + 3, photo_top + photo_size + 3)],
-        radius=27,
+        radius=31,
         fill=None,
         outline=accent_color,
         width=3
@@ -248,7 +248,7 @@ def generate_social_card_png(card):
         draw.text((photo_left, contact_y + 110), f"{label}   {web_str}", fill=(243, 244, 246), font=font_body)
         
     # RIGHT HALF: Large QR Code
-    qr_box_size = 340
+    qr_box_size = 350
     qr_box_left = card_right - qr_box_size - 50
     qr_box_top = card_top + (card_h - qr_box_size) // 2
     
@@ -272,67 +272,49 @@ def generate_social_card_png(card):
             # Fallback placeholder
             draw.rectangle([(qr_left, qr_top), (qr_left + qr_img_size, qr_top + qr_img_size)], fill=(220, 220, 220))
             
-    # Draw Headers/Footers
-    # Post Heading
-    post_title = "QRConnect"
-    try:
-        w_title, _ = draw.textsize(post_title, font=font_large_title)
-    except AttributeError:
-        bbox = draw.textbbox((0, 0), post_title, font=font_large_title)
-        w_title, _ = bbox[2] - bbox[0], bbox[3] - bbox[1]
-    draw.text(((width - w_title)//2, 100), post_title, fill=(255, 255, 255), font=font_large_title)
-    
-    tagline = "Your Digital Identity in One Scan"
-    try:
-        w_tag, _ = draw.textsize(tagline, font=font_sub)
-    except AttributeError:
-        bbox = draw.textbbox((0, 0), tagline, font=font_sub)
-        w_tag, _ = bbox[2] - bbox[0], bbox[3] - bbox[1]
-    draw.text(((width - w_tag)//2, 195), tagline, fill=accent_color, font=font_sub)
-    
-    # Bottom Instruction Footnote
-    instruction = "Scan QR to view full digital profile and save contact card"
+    # Bottom Instruction Footnotes (Branding & Details)
+    instruction = "Scan my QR code to save contact details and view my profile"
     try:
         w_inst, _ = draw.textsize(instruction, font=font_small)
     except AttributeError:
         bbox = draw.textbbox((0, 0), instruction, font=font_small)
         w_inst, _ = bbox[2] - bbox[0], bbox[3] - bbox[1]
-    draw.text(((width - w_inst)//2, card_bottom + 65), instruction, fill=(156, 163, 175), font=font_small)
+    draw.text(((width - w_inst)//2, card_bottom + 70), instruction, fill=(156, 163, 175), font=font_small)
     
     # Get dynamic frontend base URL for branding capsule
     frontend_url = getattr(settings, 'FRONTEND_BASE_URL', 'http://localhost:5173')
     display_url = frontend_url.replace("https://", "").replace("http://", "").rstrip("/")
     
-    # Drawing Capsule Button for Advertising/Branding
-    badge_text = f"CREATE YOUR CARD AT: {display_url.upper()}"
+    # Subtle advertising details in a single small line at the bottom
+    branding_text = f"Powered by QRConnect  •  Your Digital Identity in One Scan  •  {display_url.lower()}"
     try:
-        w_b, h_b = draw.textsize(badge_text, font=font_brand)
+        w_b, h_b = draw.textsize(branding_text, font=font_brand)
     except AttributeError:
-        bbox = draw.textbbox((0, 0), badge_text, font=font_brand)
+        bbox = draw.textbbox((0, 0), branding_text, font=font_brand)
         w_b, h_b = bbox[2] - bbox[0], bbox[3] - bbox[1]
         
-    badge_w = w_b + 50
-    badge_h = h_b + 28
+    badge_w = w_b + 40
+    badge_h = h_b + 20
     badge_left = (width - badge_w) // 2
-    badge_top = card_bottom + 130
+    badge_top = card_bottom + 140
     
-    # Drawing capsule overlay
+    # Drawing tiny clean pill outline around advertising details
     capsule_overlay = Image.new("RGBA", (width, height), (0, 0, 0, 0))
     capsule_draw = ImageDraw.Draw(capsule_overlay)
     capsule_draw.rounded_rectangle(
         [(badge_left, badge_top), (badge_left + badge_w, badge_top + badge_h)],
         radius=badge_h // 2,
-        fill=(30, 41, 59, 160), # Premium dark slate fill
+        fill=(17, 24, 39, 100), # Very subtle overlay
         outline=accent_color,
-        width=2
+        width=1
     )
     img = Image.alpha_composite(img, capsule_overlay)
     draw = ImageDraw.Draw(img)
     
     # Text centered inside capsule
     draw.text(
-        (badge_left + 25, badge_top + 14 - h_b // 2), 
-        badge_text, 
+        (badge_left + 20, badge_top + 10 - h_b // 2), 
+        branding_text, 
         fill=accent_color, 
         font=font_brand
     )
