@@ -13,8 +13,8 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="flex items-center">
-            <Link to="/" className="flex items-center space-x-2 group">
+          <div className="flex items-center space-x-4 shrink-0">
+            <Link to="/" className="flex items-center space-x-2 group shrink-0">
               <div className="p-2 bg-gradient-to-tr from-purple-600 to-blue-500 rounded-lg group-hover:scale-105 transition-transform duration-200">
                 <QrCode className="h-6 w-6 text-white" />
               </div>
@@ -22,10 +22,22 @@ export default function Navbar() {
                 QRConnect
               </span>
             </Link>
+            
+            {/* College / Organization Banner */}
+            <div className="hidden md:flex items-center pl-4 border-l border-gray-800 shrink-0">
+              <img 
+                src="/sadhana_banner.png" 
+                alt="Sponsors & Affiliations" 
+                className="h-10 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity duration-200"
+              />
+            </div>
           </div>
+
+          {/* Glowing Horizontal Connector Line */}
+          <div className="hidden md:block flex-1 mx-6 h-px bg-gradient-to-r from-gray-800/20 via-purple-500/30 to-indigo-500/30 via-gray-800/20" />
           
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-8 shrink-0">
             <Link 
               to="/admin" 
               className={`flex items-center space-x-1.5 text-sm font-medium transition-colors duration-150 ${
