@@ -1,0 +1,42 @@
+export const themes = {
+  professional_blue: {
+    id: 'professional_blue',
+    name: 'Professional Blue',
+    bgClass: 'bg-gradient-to-br from-slate-900 via-slate-900 to-blue-950',
+    cardBg: 'bg-slate-800/80 border-slate-700/50',
+    accentText: 'text-blue-400',
+    accentBg: 'bg-blue-500',
+    accentBorder: 'border-blue-500/30',
+    btnPrimary: 'bg-blue-600 hover:bg-blue-700 text-white shadow-blue-500/20',
+    taglineColor: 'text-blue-300',
+    ringColor: 'ring-blue-500',
+    gradientText: 'text-gradient-blue',
+  },
+  executive_dark: {
+    id: 'executive_dark',
+    name: 'Executive Dark',
+    bgClass: 'bg-gradient-to-br from-gray-950 via-gray-900 to-slate-950',
+    cardBg: 'bg-gray-900/90 border-gray-800/60',
+    accentText: 'text-amber-400',
+    accentBg: 'bg-amber-500',
+    accentBorder: 'border-amber-500/20',
+    btnPrimary: 'bg-amber-500 hover:bg-amber-600 text-black font-semibold shadow-amber-500/10',
+    taglineColor: 'text-amber-300',
+    ringColor: 'ring-amber-500',
+    gradientText: 'text-gradient-gold',
+  },
+  modern_purple: {
+    id: 'modern_purple',
+    name: 'Modern Purple',
+    bgClass: 'bg-gradient-to-br from-slate-950 via-purple-950 to-indigo-950',
+    cardBg: 'bg-purple-950/40 border-purple-900/40',
+    accentText: 'text-purple-400',
+    accentBg: 'bg-purple-600',
+    accentBorder: 'border-purple-500/30',
+    btnPrimary: 'bg-purple-600 hover:bg-purple-700 text-white shadow-purple-500/20',
+    taglineColor: 'text-purple-300',
+    ringColor: 'ring-purple-500',
+    gradientText: 'text-gradient-purple',
+  }
+};
+export default themes;
