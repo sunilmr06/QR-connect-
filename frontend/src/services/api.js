@@ -26,6 +26,11 @@ export const cardService = {
   getDownloadUrl: (slug, type) => {
     // Return direct download URLs for assets
     return `${API_BASE_URL}/${slug}/${type}`;
+  },
+  
+  deleteCard: async (slug) => {
+    const response = await api.delete(`/${slug}/delete`);
+    return response.data;
   }
 };
 

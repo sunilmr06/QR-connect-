@@ -230,3 +230,33 @@ def get_dashboard_analytics(request):
     }
     
     return Response(data)
+
+
+@api_view(['DELETE'])
+def delete_card(request, slug):
+    """
+    Deletes a digital card by slug and cleans up its associated files in the filesystem.
+    """
+    card = get_object_or_404(DigitalCard, slug=slug)
+    
+    # Clean up associated files
+    fields_to_clean = [
+        card.photo, 
+        card.offline_qr, 
+        card.online_qr, 
+        card.hybrid_qr, 
+        card.pdf_file, 
+        card.png_file, 
+        card.vcf_file
+    ]
+    for field in fields_to_clean:
+        if field and field.name:
+            try:
+                if os.path.exists(field.path):
+                    os.remove(field.path)
+            except Exception as e:
+                # Log error
+                pass
+                
+    card.delete()
+    return Response({"message": "Successfully deleted card and all associated files."}, status=status.HTTP_200_OK)

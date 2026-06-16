@@ -10,4 +10,5 @@ urlpatterns = [
     path('<slug:slug>/vcf', views.download_vcf, name='download_vcf'),
     path('<slug:slug>/qr', views.download_qr, name='download_qr'),
     path('<slug:slug>/analytics', views.track_qr_scan, name='track_qr_scan'),
+    path('<slug:slug>/delete', views.delete_card, name='delete_card'),
 ]

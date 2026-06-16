@@ -31,6 +31,18 @@ export default function AdminDashboard() {
     fetchStats();
   };
 
+  const handleDelete = async (slug, name) => {
+    if (window.confirm(`Are you sure you want to delete the digital card for "${name}"? This will permanently delete their profile, files, and analytics.`)) {
+      try {
+        await cardService.deleteCard(slug);
+        fetchStats();
+      } catch (err) {
+        console.error(err);
+        alert("Failed to delete this customer card. Please make sure the backend is active.");
+      }
+    }
+  };
+
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-20 flex flex-col items-center justify-center">
@@ -371,14 +383,22 @@ export default function AdminDashboard() {
                     <td className="py-4 text-center text-blue-400 font-semibold">{profile.views}</td>
                     <td className="py-4 text-center text-amber-400 font-semibold">{profile.scans}</td>
                     <td className="py-4 text-right">
-                      <a
-                        href={`/u/${profile.slug}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="inline-flex items-center px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-gray-300 hover:text-white border border-gray-800 hover:border-gray-700 transition-colors"
-                      >
-                        Visit
-                      </a>
+                      <div className="flex justify-end items-center space-x-2">
+                        <a
+                          href={`/u/${profile.slug}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-gray-300 hover:text-white border border-gray-800 hover:border-gray-700 transition-colors"
+                        >
+                          Visit
+                        </a>
+                        <button
+                          onClick={() => handleDelete(profile.slug, profile.name)}
+                          className="inline-flex items-center px-3 py-1.5 rounded-lg bg-red-950/30 hover:bg-red-950/60 text-red-400 hover:text-red-300 border border-red-900/40 hover:border-red-900/60 transition-colors font-semibold"
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
