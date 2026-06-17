@@ -30,6 +30,14 @@ class DigitalCard(models.Model):
     # Theme Selection
     theme = models.CharField(max_length=50, choices=THEME_CHOICES, default='professional_blue')
     
+    # Paid Tier Selection
+    TIER_CHOICES = [
+        ('silver', 'Silver (15 Rs)'),
+        ('gold', 'Gold (20 Rs)'),
+        ('platinum', 'Platinum (40 Rs)'),
+    ]
+    paid_tier = models.CharField(max_length=20, choices=TIER_CHOICES, default='silver')
+    
     # URL Slug
     slug = models.SlugField(max_length=150, unique=True, blank=True)
     

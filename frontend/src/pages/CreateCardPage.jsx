@@ -27,6 +27,7 @@ export default function CreateCardPage() {
     portfolio_url: '',
     resume_url: '',
     theme: 'professional_blue',
+    paid_tier: 'silver',
   });
 
   const handleInputChange = (e) => {
@@ -43,6 +44,10 @@ export default function CreateCardPage() {
 
   const handleThemeChange = (themeName) => {
     setFormData((prev) => ({ ...prev, theme: themeName }));
+  };
+
+  const handleTierChange = (tier) => {
+    setFormData((prev) => ({ ...prev, paid_tier: tier }));
   };
 
   const nextStep = () => setStep((prev) => Math.min(prev + 1, 5));
@@ -408,11 +413,100 @@ export default function CreateCardPage() {
                 <div className="space-y-6">
                   <div>
                     <h2 className="text-xl md:text-2xl font-bold text-white mb-1">Generate Identity</h2>
-                    <p className="text-xs text-gray-400">Review your card details and tap generate to create assets.</p>
+                    <p className="text-xs text-gray-400">Select package tier, review your details, and tap generate.</p>
                   </div>
 
                   <div className="p-4 rounded-xl bg-purple-500/10 border border-purple-500/20 text-xs text-purple-300 leading-relaxed">
                     ✨ <span className="font-bold">Event Optimized:</span> QRConnect will compile your Offline QR (VCard), Online QR, printable business card PDFs (A4 template included), and shareable PNGs in less than 30 seconds.
+                  </div>
+
+                  {/* Tier Selection Grid */}
+                  <div className="space-y-3">
+                    <label className="text-xs font-bold text-gray-300 uppercase tracking-wide">Select Package Tier *</label>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {/* Silver (15 Rs) */}
+                      <button
+                        type="button"
+                        onClick={() => handleTierChange('silver')}
+                        className={`flex flex-col justify-between p-4 rounded-xl border text-left transition-all duration-200 ${
+                          formData.paid_tier === 'silver'
+                            ? 'bg-slate-900/85 border-slate-400 shadow-[0_0_15px_rgba(148,163,184,0.15)]'
+                            : 'bg-slate-900/30 border-slate-800/80 hover:border-slate-700 hover:bg-slate-900/40'
+                        }`}
+                      >
+                        <div>
+                          <div className="flex justify-between items-center mb-1">
+                            <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">Silver</span>
+                            <span className="text-sm font-black text-slate-100">₹15</span>
+                          </div>
+                          <p className="text-[10px] text-gray-400 leading-relaxed">
+                            Essential print and contact files.
+                          </p>
+                        </div>
+                        <div className="mt-4 pt-2 border-t border-slate-800/40 text-[9px] text-slate-400 space-y-1">
+                          <div className="flex items-center gap-1">✓ VCF Contact Download</div>
+                          <div className="flex items-center gap-1">✓ Printable Card PDF</div>
+                          <div className="flex items-center gap-1">✓ Offline QR Code</div>
+                          <div className="text-gray-500 line-through">✗ Social Media Card</div>
+                          <div className="text-gray-500 line-through">✗ Live Profile Website</div>
+                        </div>
+                      </button>
+
+                      {/* Gold (20 Rs) */}
+                      <button
+                        type="button"
+                        onClick={() => handleTierChange('gold')}
+                        className={`flex flex-col justify-between p-4 rounded-xl border text-left transition-all duration-200 relative ${
+                          formData.paid_tier === 'gold'
+                            ? 'bg-slate-900/85 border-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.15)]'
+                            : 'bg-slate-900/30 border-slate-800/80 hover:border-slate-700 hover:bg-slate-900/40'
+                        }`}
+                      >
+                        <div>
+                          <div className="flex justify-between items-center mb-1">
+                            <span className="text-xs font-bold text-amber-400 uppercase tracking-wider">Gold</span>
+                            <span className="text-sm font-black text-amber-200">₹20</span>
+                          </div>
+                          <p className="text-[10px] text-gray-400 leading-relaxed">
+                            Perfect for sharing on social media.
+                          </p>
+                        </div>
+                        <div className="mt-4 pt-2 border-t border-slate-800/40 text-[9px] text-slate-400 space-y-1">
+                          <div className="flex items-center gap-1 text-slate-300 font-medium">✓ Everything in Silver</div>
+                          <div className="flex items-center gap-1 text-amber-400 font-semibold">✓ PNG Social Media Card</div>
+                          <div className="text-gray-500 line-through">✗ Live Profile Website</div>
+                        </div>
+                      </button>
+
+                      {/* Platinum (40 Rs) */}
+                      <button
+                        type="button"
+                        onClick={() => handleTierChange('platinum')}
+                        className={`flex flex-col justify-between p-4 rounded-xl border text-left transition-all duration-200 relative ${
+                          formData.paid_tier === 'platinum'
+                            ? 'bg-slate-900/85 border-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.25)]'
+                            : 'bg-slate-900/30 border-slate-800/80 hover:border-slate-700 hover:bg-slate-900/40'
+                        }`}
+                      >
+                        <div className="absolute -top-2 right-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-[8px] font-black text-white px-2 py-0.5 rounded-full uppercase tracking-wider">
+                          Best Value
+                        </div>
+                        <div>
+                          <div className="flex justify-between items-center mb-1">
+                            <span className="text-xs font-bold text-purple-400 uppercase tracking-wider">Platinum</span>
+                            <span className="text-sm font-black text-purple-200">₹40</span>
+                          </div>
+                          <p className="text-[10px] text-gray-400 leading-relaxed">
+                            Your full interactive digital profile.
+                          </p>
+                        </div>
+                        <div className="mt-4 pt-2 border-t border-slate-800/40 text-[9px] text-slate-400 space-y-1">
+                          <div className="flex items-center gap-1 text-slate-300 font-medium">✓ Everything in Gold</div>
+                          <div className="flex items-center gap-1 text-purple-400 font-semibold">✓ Live Profile Website Link</div>
+                          <div className="flex items-center gap-1 text-indigo-400 font-semibold">✓ Dynamic Scan Redirect</div>
+                        </div>
+                      </button>
+                    </div>
                   </div>
 
                   {error && (
@@ -437,6 +531,13 @@ export default function CreateCardPage() {
                     <div className="flex justify-between">
                       <span className="font-semibold text-gray-300">Theme</span>
                       <span>{formData.theme.replace('_', ' ').toUpperCase()}</span>
+                    </div>
+                    <div className="flex justify-between border-t border-slate-850 pt-3 text-xs font-bold">
+                      <span className="text-purple-400 uppercase">Selected Package</span>
+                      <span className="text-white">
+                        {formData.paid_tier.toUpperCase()} — ₹
+                        {formData.paid_tier === 'silver' ? '15' : formData.paid_tier === 'gold' ? '20' : '40'}
+                      </span>
                     </div>
                   </div>
                 </div>

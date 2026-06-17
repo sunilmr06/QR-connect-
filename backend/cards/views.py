@@ -69,6 +69,13 @@ def get_card_by_slug(request, slug):
     """
     card = get_object_or_404(DigitalCard, slug=slug)
     
+    # Restrict online profile access for Silver and Gold tiers
+    if card.paid_tier in ['silver', 'gold']:
+        return Response(
+            {"error": "This online profile page is inactive. Website profiles are exclusive to Platinum tier cards."},
+            status=status.HTTP_403_FORBIDDEN
+        )
+    
     # Increment view counter
     card.profile_views += 1
     card.save()
@@ -104,6 +111,12 @@ def download_png(request, slug):
     Serves the social media PNG card and records a download event.
     """
     card = get_object_or_404(DigitalCard, slug=slug)
+    if card.paid_tier == 'silver':
+        return Response(
+            {"error": "Social Media Card is exclusive to Gold and Platinum tiers."},
+            status=status.HTTP_403_FORBIDDEN
+        )
+        
     if not card.png_file:
         raise Http404("PNG file not found")
         
@@ -165,7 +178,11 @@ def track_qr_scan(request, slug):
     card.save()
     AnalyticsLog.objects.create(card=card, event_type='scan')
     
-    # Redirect directly to online profile page
+    # Redirect depending on the paid tier
+    if card.paid_tier in ['silver', 'gold']:
+        return redirect('download_vcf', slug=card.slug)
+        
+    # Redirect directly to online profile page for Platinum tier
     return redirect(f"{FRONTEND_BASE_URL}/u/{card.slug}")
 
 

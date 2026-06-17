@@ -17,7 +17,7 @@ class DigitalCardSerializer(serializers.ModelSerializer):
             'id', 'name', 'phone', 'email', 'photo', 'photo_url',
             'designation', 'department', 'company', 'address',
             'linkedin', 'github', 'instagram', 'portfolio_url', 'resume_url',
-            'theme', 'slug', 
+            'theme', 'paid_tier', 'slug', 
             'offline_qr_url', 'online_qr_url', 'hybrid_qr_url',
             'pdf_url', 'png_url', 'vcf_url',
             'profile_views', 'qr_scans', 'downloads',

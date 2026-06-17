@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation, Link, Navigate } from 'react-router-dom';
-import { Check, Copy, ExternalLink, Download, FileText, UserPlus, Image as ImageIcon, QrCode, Plus } from 'lucide-react';
+import { Check, Copy, ExternalLink, Download, FileText, UserPlus, Image as ImageIcon, QrCode, Plus, Lock } from 'lucide-react';
 import { cardService } from '../services/api';
 
 export default function SuccessPage() {
@@ -26,6 +26,9 @@ export default function SuccessPage() {
     const downloadUrl = cardService.getDownloadUrl(card.slug, type);
     window.open(downloadUrl, '_blank');
   };
+
+  const isProfileLocked = card.paid_tier !== 'platinum';
+  const isSocialLocked = card.paid_tier === 'silver';
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-12 md:py-20 text-center">
@@ -77,34 +80,47 @@ export default function SuccessPage() {
         <div className="md:col-span-7 rounded-2xl glass-panel border border-slate-800/80 p-6 md:p-8 flex flex-col justify-between text-left">
           
           {/* Profile URL Copy Link Box */}
-          <div className="space-y-3">
-            <h3 className="font-bold text-white text-base">Public Profile URL</h3>
-            <p className="text-xs text-gray-400">
-              Share this web link to showcase your resume, social accounts, and projects.
-            </p>
-            
-            <div className="flex bg-slate-900/60 border border-gray-800 rounded-xl p-1.5 items-center justify-between">
-              <span className="text-xs text-purple-400 font-medium truncate px-2">
-                {window.location.origin}/u/{card.slug}
-              </span>
-              <div className="flex items-center space-x-1">
-                <button
-                  onClick={handleCopyLink}
-                  className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-gray-300 hover:text-white transition-colors"
-                  title="Copy Link"
-                >
-                  {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-                </button>
-                <Link
-                  to={`/u/${card.slug}`}
-                  target="_blank"
-                  className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-gray-300 hover:text-white transition-colors"
-                  title="Visit Profile"
-                >
-                  <ExternalLink className="w-4 h-4" />
-                </Link>
-              </div>
+          <div className="space-y-3 relative overflow-hidden">
+            <div className="flex justify-between items-center">
+              <h3 className="font-bold text-white text-base">Public Profile URL</h3>
+              {isProfileLocked && (
+                <span className="flex items-center gap-1 text-[9px] font-bold text-purple-400 bg-purple-500/10 border border-purple-500/20 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                  <Lock className="w-2.5 h-2.5" /> Platinum Only
+                </span>
+              )}
             </div>
+            
+            {isProfileLocked ? (
+              <div className="flex flex-col p-4 rounded-xl border border-dashed border-slate-800/80 bg-slate-950/20 text-center items-center justify-center space-y-1.5">
+                <p className="text-xs text-gray-400 font-medium">Web Profile is Locked</p>
+                <p className="text-[10px] text-gray-500 max-w-[280px]">
+                  Upgrade to the ₹40 Platinum package to unlock a live interactive webpage.
+                </p>
+              </div>
+            ) : (
+              <div className="flex bg-slate-900/60 border border-gray-800 rounded-xl p-1.5 items-center justify-between">
+                <span className="text-xs text-purple-400 font-medium truncate px-2">
+                  {window.location.origin}/u/{card.slug}
+                </span>
+                <div className="flex items-center space-x-1">
+                  <button
+                    onClick={handleCopyLink}
+                    className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-gray-300 hover:text-white transition-colors"
+                    title="Copy Link"
+                  >
+                    {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                  </button>
+                  <Link
+                    to={`/u/${card.slug}`}
+                    target="_blank"
+                    className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-gray-300 hover:text-white transition-colors"
+                    title="Visit Profile"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                  </Link>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Downloads Action Grid */}
@@ -121,14 +137,25 @@ export default function SuccessPage() {
                 <span className="text-[9px] text-gray-500 mt-0.5">85.6mm & A4 templates</span>
               </button>
 
-              <button 
-                onClick={() => downloadAsset('png')}
-                className="flex flex-col items-center justify-center p-4 rounded-xl border border-gray-800 bg-slate-900/30 hover:border-purple-500/50 hover:bg-slate-900/50 transition-all text-center group cursor-pointer"
-              >
-                <ImageIcon className="w-6 h-6 text-blue-400 group-hover:scale-105 transition-transform duration-200" />
-                <span className="text-xs font-semibold text-white mt-2">Social Card</span>
-                <span className="text-[9px] text-gray-500 mt-0.5">1080x1080 JPEG</span>
-              </button>
+              {isSocialLocked ? (
+                <div className="flex flex-col items-center justify-center p-4 rounded-xl border border-dashed border-slate-800/80 bg-slate-950/10 text-center opacity-50 relative group">
+                  <div className="absolute top-2 right-2 text-slate-500">
+                    <Lock className="w-3 h-3" />
+                  </div>
+                  <ImageIcon className="w-6 h-6 text-gray-600" />
+                  <span className="text-xs font-semibold text-gray-500 mt-2">Social Card</span>
+                  <span className="text-[9px] text-gray-600 mt-0.5">Gold / Platinum Only</span>
+                </div>
+              ) : (
+                <button 
+                  onClick={() => downloadAsset('png')}
+                  className="flex flex-col items-center justify-center p-4 rounded-xl border border-gray-800 bg-slate-900/30 hover:border-purple-500/50 hover:bg-slate-900/50 transition-all text-center group cursor-pointer"
+                >
+                  <ImageIcon className="w-6 h-6 text-blue-400 group-hover:scale-105 transition-transform duration-200" />
+                  <span className="text-xs font-semibold text-white mt-2">Social Card</span>
+                  <span className="text-[9px] text-gray-500 mt-0.5">1080x1080 JPEG</span>
+                </button>
+              )}
 
               <button 
                 onClick={() => downloadAsset('vcf')}
