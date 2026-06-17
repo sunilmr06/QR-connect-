@@ -1,14 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { cardService } from '../services/api';
-import { Users, QrCode, Eye, Download, TrendingUp, Award, RefreshCw, BarChart2 } from 'lucide-react';
+import { Users, QrCode, Eye, Download, TrendingUp, Award, RefreshCw, BarChart2, Lock } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function AdminDashboard() {
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    () => sessionStorage.getItem('isAdminAuthenticated') === 'true'
+  );
+  const [password, setPassword] = useState('');
+  const [authError, setAuthError] = useState('');
+
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
 
   const fetchStats = async () => {
+    if (!isAuthenticated) return;
     try {
       const data = await cardService.getDashboardAnalytics();
       setStats(data);
@@ -23,8 +31,24 @@ export default function AdminDashboard() {
   };
 
   useEffect(() => {
-    fetchStats();
-  }, []);
+    if (isAuthenticated) {
+      fetchStats();
+    } else {
+      setLoading(false);
+    }
+  }, [isAuthenticated]);
+
+  const handleLoginSubmit = (e) => {
+    e.preventDefault();
+    if (password === 'Admin@123') {
+      setLoading(true);
+      sessionStorage.setItem('isAdminAuthenticated', 'true');
+      setIsAuthenticated(true);
+      setAuthError('');
+    } else {
+      setAuthError('Incorrect admin password. Please try again.');
+    }
+  };
 
   const handleRefresh = () => {
     setRefreshing(true);
@@ -42,6 +66,64 @@ export default function AdminDashboard() {
       }
     }
   };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-[70vh] flex items-center justify-center px-4 py-16">
+        <motion.div 
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="w-full max-w-md p-8 rounded-2xl glass-panel border border-slate-800 bg-slate-900/10 shadow-2xl relative overflow-hidden"
+        >
+          {/* Subtle glow effect */}
+          <div className="absolute -top-20 -right-20 w-44 h-44 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-20 -left-20 w-44 h-44 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+          
+          <div className="text-center mb-8">
+            <div className="w-16 h-16 bg-purple-500/10 border border-purple-500/30 text-purple-400 rounded-full flex items-center justify-center mx-auto mb-5 shadow-lg shadow-purple-500/10">
+              <Lock className="w-7 h-7" />
+            </div>
+            <h1 className="text-2xl font-black text-white tracking-tight">Admin Gate</h1>
+            <p className="text-xs text-gray-400 mt-2 max-w-[280px] mx-auto">
+              Please enter your administrative password to access platform analytics and leaderboard.
+            </p>
+          </div>
+
+          <form onSubmit={handleLoginSubmit} className="space-y-5">
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-gray-300 uppercase tracking-wide">Password</label>
+              <input 
+                type="password" 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full bg-slate-950/60 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-purple-500 transition-colors"
+                autoFocus
+              />
+            </div>
+
+            {authError && (
+              <motion.div 
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-[11px] text-red-400 text-center font-medium"
+              >
+                {authError}
+              </motion.div>
+            )}
+
+            <button
+              type="submit"
+              className="w-full py-3 px-4 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 transition-all shadow-lg shadow-purple-500/20 active:scale-[0.99]"
+            >
+              Sign In to Dashboard
+            </button>
+          </form>
+        </motion.div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
